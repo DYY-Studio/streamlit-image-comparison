@@ -1,4 +1,5 @@
-import streamlit.components.v1 as components
+import streamlit as st
+from streamlit.delta_generator import DeltaGenerator
 from PIL import Image
 import base64
 import io
@@ -158,7 +159,7 @@ def image_comparison(
 	starting_position: int = 50,
 	make_responsive: bool = True,
 	in_memory: bool = False,
-) -> components.html:
+) -> DeltaGenerator:
 	"""
 	Create a comparison slider for two images.
 	
@@ -185,7 +186,7 @@ def image_comparison(
 
 	Returns
 	-------
-	components.html
+	st.iframe
 		Returns a static component with a timeline
 	"""
 	# Prepare images
@@ -241,6 +242,6 @@ def image_comparison(
 			}});
 		</script>
 		"""
-	static_component = components.html(htmlcode, height=height, width=width)
+	static_component = st.iframe(htmlcode, height=height, width=width)
 
 	return static_component
