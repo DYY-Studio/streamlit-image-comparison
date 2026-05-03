@@ -5,7 +5,7 @@ import base64
 import io
 import os
 import uuid
-from typing import Union
+from typing import Union, Literal
 import requests
 import numpy as np
 
@@ -154,7 +154,8 @@ def image_comparison(
 	img2: Union[Image.Image, str, np.ndarray],
 	label1: str = "1",
 	label2: str = "2",
-	width: int = 704,
+	width: Union[int, Literal["stretch", "content"]] = "stretch",
+	height: Union[int, Literal["stretch", "content"]] = "content",
 	show_labels: bool = True,
 	starting_position: int = 50,
 	make_responsive: bool = True,
@@ -173,8 +174,10 @@ def image_comparison(
 		Label for the first image. Default is "1".
 	label2: str, optional
 		Label for the second image. Default is "2".
-	width: int, optional
-		Width of the component in pixels. Default is 704.
+	width: "stretch", "content" or int, optional
+		Width of the component. Default is "stretch".
+	height: "stretch", "content" or int, optional
+		Height of the component. Default is "content".
 	show_labels: bool, optional
 		Whether to show labels on the images. Default is True.
 	starting_position: int, optional
@@ -193,10 +196,6 @@ def image_comparison(
 	img1_pillow = read_image_as_pil(img1)
 	img2_pillow = read_image_as_pil(img2)
 
-	img_width, img_height = img1_pillow.size
-	h_to_w = img_height / img_width
-	height = int((width * h_to_w) * 0.95)
-
 	if in_memory:
 		# Convert images to base64 strings
 		img1 = pillow_to_base64(img1_pillow)
@@ -210,6 +209,9 @@ def image_comparison(
 		img1 = pillow_local_file_to_base64(img1_pillow, TEMP_DIR)
 		img2 = pillow_local_file_to_base64(img2_pillow, TEMP_DIR)
 
+	css_width = f"{width}px" if isinstance(width, int) else "100%"
+	css_height = f"{height}px" if isinstance(height, int) else "auto"
+
 	# Load CSS and JS
 	cdn_path = "https://cdn.knightlab.com/libs/juxtapose/latest"
 	css_block = f'<link rel="stylesheet" href="{cdn_path}/css/juxtapose.css">'
@@ -220,7 +222,7 @@ def image_comparison(
 		<style>body {{ margin: unset; }}</style>
 		{css_block}
 		{js_block}
-		<div id="foo" style="height: {height}; width: {width or '100%'};"></div>
+		<div id="foo" style="width: {css_width}; height: {css_height};"></div>
 		<script>
 		slider = new juxtapose.JXSlider('#foo',
 			[
