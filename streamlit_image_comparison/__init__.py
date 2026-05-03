@@ -11,7 +11,7 @@ import numpy as np
 
 TEMP_DIR = "temp"
 
-__version__ = "0.0.5"
+__version__ = "0.0.6"
 
 def exif_transpose(image: Image.Image):
 	"""
