@@ -68,7 +68,7 @@ with st.form(key="Streamlit Image Comparison"):
             width_adaptive = st.selectbox("Component width:", ["pixels", "stretch", "content"])
         with sub_col2:
             width = st.slider(
-                "", min_value=400, max_value=1000, value=700, step=100, disabled=width_adaptive != "pixels"
+                "Component width:", min_value=400, max_value=1000, value=700, step=100, disabled=width_adaptive != "pixels", label_visibility="hidden"
             )
         if width_adaptive != "pixels":
             width = width_adaptive
